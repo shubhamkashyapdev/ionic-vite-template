@@ -1,7 +1,7 @@
 import { IonContent, IonHeader, IonPage } from "@ionic/react"
 import { Button, Loader, Stack, Box, Text } from "@mantine/core"
-import { useStore } from "./store"
-import { useUserQuery } from "./services/users.service"
+import { useStore } from "src/store"
+import { useUserQuery } from "src/services/users.service"
 
 function App() {
   const { currentTheme, setTheme } = useStore()
@@ -19,7 +19,7 @@ function App() {
         ) : (
           <Stack spacing={20}>
             {users?.map((user: User) => (
-              <Box>
+              <Box key={user.id}>
                 <Text>{user.name}</Text>
               </Box>
             ))}

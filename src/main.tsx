@@ -1,10 +1,10 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import App from "./App"
+import App from "src/App"
 import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 import { Redirect, Route } from "react-router"
-import "./index.css"
+import "src/index.css"
 
 /* Core Ionic framework styles */
 import "@ionic/react/css/core.css"
@@ -21,8 +21,8 @@ import "@ionic/react/css/text-alignment.css"
 import "@ionic/react/css/text-transformation.css"
 import "@ionic/react/css/flex-utils.css"
 import "@ionic/react/css/display.css"
-import ReactQueryProvider from "./providers/ReactQueryProviderC"
-import MantineProviderC from "./providers/MantineProviderC"
+import ReactQueryProvider from "src/providers/ReactQueryProviderC"
+import MantineProviderC from "src/providers/MantineProviderC"
 
 setupIonicReact()
 

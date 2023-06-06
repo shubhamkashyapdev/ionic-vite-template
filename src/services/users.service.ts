@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { http } from "./axios"
-import { routes } from "./routes"
+import { http } from "src/services/axios"
+import { routes } from "src/services/routes"
 
 const fetchUsers = async () => {
   const users = await http.get<User[]>(routes.Users.Get)
