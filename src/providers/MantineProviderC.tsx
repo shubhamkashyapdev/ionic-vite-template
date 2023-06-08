@@ -3,7 +3,13 @@ import { MantineProvider } from "@mantine/core"
 
 const MantineProviderC: React.FC<ChildrenType> = ({ children }) => {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        colorScheme: "dark",
+      }}
+    >
       {children}
     </MantineProvider>
   )

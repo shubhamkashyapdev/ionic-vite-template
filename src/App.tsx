@@ -9,23 +9,41 @@ import {
   Divider,
   Title,
   TextInput,
+  Group,
+  Paper,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useStore } from "src/store"
 import { useUserQuery } from "src/services/users.service"
-import { auth } from "src/firebase"
+import {
+  IconBrandFacebook,
+  IconBrandGithub,
+  IconBrandGoogle,
+  IconBrandTwitter,
+} from "@tabler/icons-react"
+import {
+  auth,
+  facebookProvider,
+  githubProvider,
+  googleProvider,
+  twitterProvider,
+} from "src/firebase"
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  signInWithPopup,
+  fetchSignInMethodsForEmail,
+  User,
+  AuthProvider,
 } from "firebase/auth"
-import React from "react"
-
+import React, { useState } from "react"
 function App() {
   const { currentTheme, setTheme } = useStore()
   function handleTheme() {
     setTheme(currentTheme === "dark" ? "light" : "dark")
   }
+  const [user, setUser] = useState<User>()
   const { data: users, isLoading: usersLoading } = useUserQuery()
   const form = useForm({
     initialValues: {
@@ -42,7 +60,7 @@ function App() {
     try {
       const signinRes = await signInWithEmailAndPassword(auth, email, password)
       const user = signinRes.user
-      console.log({ signinUser: user })
+      setUser(user)
       form.reset()
     } catch (err) {
       if (err instanceof Error) {
@@ -62,7 +80,7 @@ function App() {
         password
       )
       const user = singupRes.user
-      console.log({ singupUser: user })
+      setUser(user)
       form.reset()
     } catch (err) {
       if (err instanceof Error) {
@@ -73,26 +91,47 @@ function App() {
   }
 
   async function userSignOut() {
-    signOut(auth)
+    try {
+      await signOut(auth)
+      setUser(undefined)
+    } catch (err) {
+      console.log(err)
+    }
   }
   const handleSubmit = (values: any) => {
     const validated = form.validate()
     if (validated.hasErrors) return
     console.log(values)
   }
+
+  const handleSocialSignin = async (provider: AuthProvider) => {
+    try {
+      const userRes = await signInWithPopup(auth, provider)
+      const user = userRes.user
+      setUser(user)
+    } catch (err: any) {
+      console.log(err)
+    }
+  }
+  console.log(user)
   return (
     <IonPage>
       <IonHeader>My header!</IonHeader>
-      <IonContent>
-        <Button onClick={handleTheme}>{currentTheme}</Button>
-        <Divider my={20} />
-        <Title>Firebase Auth</Title>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <Stack spacing={20} mx={30}>
-            <Text mt={20} size={"lg"}>
-              Email / Password Auth
-            </Text>
-            <Box maw={400}>
+      <IonContent className="bg-black">
+        <Stack spacing={20} bg={"dark"}>
+          <Button onClick={handleTheme}>{currentTheme}</Button>
+          <Divider my={20} />
+          <Paper py={10}>
+            <Title align="center">Firebase Auth</Title>
+          </Paper>
+          <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+            <Stack spacing={20} mx={30}>
+              <Paper mt={20}>
+                <Text size={"lg"} p={10}>
+                  Email / Password Auth
+                </Text>
+              </Paper>
+
               <TextInput
                 label="Your Email"
                 placeholder="Enter your email address"
@@ -103,34 +142,75 @@ function App() {
                 placeholder="Enter your password"
                 {...form.getInputProps("password")}
               />
-            </Box>
-            {auth?.currentUser ? (
-              <Box className="mt-2">
-                <Text className="text-white text-center">
-                  user: {auth.currentUser?.email}
-                </Text>
-                <Button onClick={userSignOut}>Sign Out</Button>
-              </Box>
-            ) : (
-              <Box className="flex-row justify-center gap-4">
-                <Button onClick={login}>Login</Button>
-                <Button onClick={register}>Register</Button>
-              </Box>
-            )}
-          </Stack>
-        </form>
-        <Divider my={20} />
-        {usersLoading ? (
-          <Loader />
-        ) : (
-          <Flex gap={20}>
-            {users?.map((user: User) => (
-              <Box key={user.id}>
-                <Text>{user.name}</Text>
-              </Box>
-            ))}
+              <Stack align="center">
+                {user?.displayName ? (
+                  <Box className="mt-2">
+                    <Text className="text-white text-center">
+                      user: {user.displayName}
+                    </Text>
+                    <Button fullWidth mt={10} onClick={userSignOut}>
+                      Sign Out
+                    </Button>
+                  </Box>
+                ) : (
+                  <Group spacing={10} align="center">
+                    <Button onClick={login}>Login</Button>
+                    <Button onClick={register}>Register</Button>
+                  </Group>
+                )}
+              </Stack>
+            </Stack>
+          </form>
+          <Flex
+            direction="column"
+            gap={20}
+            mt={30}
+            w="70%"
+            mx={"auto"}
+            align="center"
+          >
+            <Button
+              onClick={() => handleSocialSignin(googleProvider)}
+              fullWidth
+              variant="outline"
+              leftIcon={<IconBrandGoogle />}
+            >
+              SignIn With Google
+            </Button>
+            <Button
+              onClick={() => handleSocialSignin(facebookProvider)}
+              fullWidth
+              variant="outline"
+              leftIcon={<IconBrandFacebook />}
+            >
+              SignIn With Facebook
+            </Button>
+            <Button
+              onClick={() => handleSocialSignin(twitterProvider)}
+              fullWidth
+              variant="outline"
+              leftIcon={<IconBrandTwitter />}
+            >
+              SignIn With Twitter
+            </Button>
+            <Button
+              onClick={() => handleSocialSignin(githubProvider)}
+              fullWidth
+              variant="outline"
+              leftIcon={<IconBrandGithub />}
+            >
+              SignIn With GitHub
+            </Button>
           </Flex>
-        )}
+          <Divider my={20} />
+          {usersLoading ? (
+            <Loader />
+          ) : (
+            <Paper my={10} mt={20}>
+              <Title>User: {users?.length}</Title>
+            </Paper>
+          )}
+        </Stack>
       </IonContent>
     </IonPage>
   )
