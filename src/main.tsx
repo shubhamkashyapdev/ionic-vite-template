@@ -23,7 +23,6 @@ import "@ionic/react/css/flex-utils.css"
 import "@ionic/react/css/display.css"
 import ReactQueryProvider from "src/providers/ReactQueryProviderC"
 import MantineProviderC from "src/providers/MantineProviderC"
-import { ColorSchemeProvider } from "@mantine/core"
 import ColorSchemeProviderM from "./providers/ColorSchemeProviderM"
 
 setupIonicReact()

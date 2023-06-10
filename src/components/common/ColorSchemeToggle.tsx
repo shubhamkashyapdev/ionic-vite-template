@@ -1,10 +1,4 @@
-import {
-  useMantineColorScheme,
-  SegmentedControl,
-  Group,
-  Center,
-  Box,
-} from "@mantine/core"
+import { SegmentedControl, Group, Center, Box } from "@mantine/core"
 import { IconSun, IconMoon } from "@tabler/icons-react"
 import { useStore } from "src/store"
 

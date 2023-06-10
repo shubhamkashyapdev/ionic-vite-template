@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IonContent, IonHeader, IonPage } from "@ionic/react"
+import { Capacitor } from "@capacitor/core"
+import {
+  FirebaseAuthentication,
+  User as FUser,
+} from "@capacitor-firebase/authentication"
 import {
   Button,
   Loader,
@@ -10,14 +15,10 @@ import {
   Divider,
   Title,
   TextInput,
-  Group,
   Paper,
   Container,
   Avatar,
-  ActionIcon,
-  rem,
   Grid,
-  Center,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useStore } from "src/store"
@@ -27,7 +28,6 @@ import {
   IconBrandGithub,
   IconBrandGoogle,
   IconBrandTwitter,
-  IconX,
 } from "@tabler/icons-react"
 import {
   auth,
@@ -47,11 +47,8 @@ import {
 import { useState } from "react"
 import ColorSchemeToggle from "src/components/common/ColorSchemeToggle"
 function App() {
-  const { colorScheme, toggleColorScheme } = useStore()
-  function handleTheme() {
-    toggleColorScheme()
-  }
-  const [user, setUser] = useState<User>()
+  const { colorScheme } = useStore()
+  const [user, setUser] = useState<User | FUser>()
   const { data: users, isLoading: usersLoading } = useUserQuery()
   const form = useForm({
     initialValues: {
@@ -110,6 +107,40 @@ function App() {
     const validated = form.validate()
     if (validated.hasErrors) return
     console.log(values)
+  }
+
+  const signInWithSocial = async (
+    value: "Github" | "Google" | "Twitter" | "Facebook"
+  ) => {
+    console.log({ value })
+    try {
+      let user
+      switch (value) {
+        case "Google": {
+          const result = await FirebaseAuthentication.signInWithGoogle()
+          user = result.user || undefined
+          break
+        }
+        case "Github": {
+          const result = await FirebaseAuthentication.signInWithGithub()
+          user = result.user || undefined
+          break
+        }
+        case "Twitter": {
+          const result = await FirebaseAuthentication.signInWithTwitter()
+          user = result.user || undefined
+          break
+        }
+        case "Facebook": {
+          const result = await FirebaseAuthentication.signInWithFacebook()
+          user = result.user || undefined
+          break
+        }
+      }
+      setUser(user)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const handleSocialSignin = async (provider: AuthProvider) => {
@@ -194,7 +225,11 @@ function App() {
               align="center"
             >
               <Button
-                onClick={() => handleSocialSignin(googleProvider)}
+                onClick={() =>
+                  Capacitor.isNativePlatform()
+                    ? signInWithSocial("Google")
+                    : handleSocialSignin(googleProvider)
+                }
                 fullWidth
                 variant="outline"
                 leftIcon={<IconBrandGoogle />}
@@ -202,7 +237,11 @@ function App() {
                 SignIn With Google
               </Button>
               <Button
-                onClick={() => handleSocialSignin(facebookProvider)}
+                onClick={() =>
+                  Capacitor.isNativePlatform()
+                    ? signInWithSocial("Facebook")
+                    : handleSocialSignin(facebookProvider)
+                }
                 fullWidth
                 variant="outline"
                 leftIcon={<IconBrandFacebook />}
@@ -210,7 +249,11 @@ function App() {
                 SignIn With Facebook
               </Button>
               <Button
-                onClick={() => handleSocialSignin(twitterProvider)}
+                onClick={() =>
+                  Capacitor.isNativePlatform()
+                    ? signInWithSocial("Twitter")
+                    : handleSocialSignin(twitterProvider)
+                }
                 fullWidth
                 variant="outline"
                 leftIcon={<IconBrandTwitter />}
@@ -218,7 +261,11 @@ function App() {
                 SignIn With Twitter
               </Button>
               <Button
-                onClick={() => handleSocialSignin(githubProvider)}
+                onClick={() =>
+                  Capacitor.isNativePlatform()
+                    ? signInWithSocial("Github")
+                    : handleSocialSignin(githubProvider)
+                }
                 fullWidth
                 variant="outline"
                 leftIcon={<IconBrandGithub />}
