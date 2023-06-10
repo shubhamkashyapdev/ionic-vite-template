@@ -1,7 +1,7 @@
 type Theme = "dark" | "light"
 type ThemeStore = {
-  currentTheme: Theme
-  setTheme: (theme: Theme) => void
+  colorScheme: Theme
+  toggleColorScheme: () => void
 }
 
 type CombineStore = ThemeStore

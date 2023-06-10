@@ -8,8 +8,10 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "ionic:build": "npm run build",
     "ionic:serve": "vite dev --host",
-    "android": "ionic capacitor run android --external --livereload -p 5173"
+    "android": "ionic capacitor run android --external --livereload -p 5173",
+    "android:prod": "yarn build && npx cap copy android && npx cap sync && npx cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^5.0.4",

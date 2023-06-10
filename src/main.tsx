@@ -23,22 +23,26 @@ import "@ionic/react/css/flex-utils.css"
 import "@ionic/react/css/display.css"
 import ReactQueryProvider from "src/providers/ReactQueryProviderC"
 import MantineProviderC from "src/providers/MantineProviderC"
+import { ColorSchemeProvider } from "@mantine/core"
+import ColorSchemeProviderM from "./providers/ColorSchemeProviderM"
 
 setupIonicReact()
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ReactQueryProvider>
-      <MantineProviderC>
-        <IonApp>
-          <IonReactRouter>
-            <IonRouterOutlet>
-              <Route path="/home" component={App} />
-              <Redirect exact from="/" to="/home" />
-            </IonRouterOutlet>
-          </IonReactRouter>
-        </IonApp>
-      </MantineProviderC>
+      <ColorSchemeProviderM>
+        <MantineProviderC>
+          <IonApp>
+            <IonReactRouter>
+              <IonRouterOutlet>
+                <Route path="/home" component={App} />
+                <Redirect exact from="/" to="/home" />
+              </IonRouterOutlet>
+            </IonReactRouter>
+          </IonApp>
+        </MantineProviderC>
+      </ColorSchemeProviderM>
     </ReactQueryProvider>
   </React.StrictMode>
 )

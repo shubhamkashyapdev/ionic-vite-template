@@ -5,7 +5,8 @@ export const createThemeStore: StateCreator<
   [],
   [],
   ThemeStore
-> = (set) => ({
-  currentTheme: "dark",
-  setTheme: (theme) => set({ currentTheme: theme }),
+> = (set, get) => ({
+  colorScheme: "dark",
+  toggleColorScheme: () =>
+    set({ colorScheme: get().colorScheme === "dark" ? "light" : "dark" }),
 })
