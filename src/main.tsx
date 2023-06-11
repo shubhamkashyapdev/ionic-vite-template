@@ -1,9 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import App from "src/App"
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react"
-import { IonReactRouter } from "@ionic/react-router"
-import { Redirect, Route } from "react-router"
+import { IonApp, setupIonicReact } from "@ionic/react"
 import "src/index.css"
 
 /* Core Ionic framework styles */
@@ -24,6 +21,7 @@ import "@ionic/react/css/display.css"
 import ReactQueryProvider from "src/providers/ReactQueryProviderC"
 import MantineProviderC from "src/providers/MantineProviderC"
 import ColorSchemeProviderM from "./providers/ColorSchemeProviderM"
+import App from "./App"
 
 setupIonicReact()
 
@@ -33,12 +31,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <ColorSchemeProviderM>
         <MantineProviderC>
           <IonApp>
-            <IonReactRouter>
-              <IonRouterOutlet>
-                <Route path="/home" component={App} />
-                <Redirect exact from="/" to="/home" />
-              </IonRouterOutlet>
-            </IonReactRouter>
+            <App />
           </IonApp>
         </MantineProviderC>
       </ColorSchemeProviderM>
